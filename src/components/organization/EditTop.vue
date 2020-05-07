@@ -3,7 +3,7 @@
     :before-close="handleClose"
     custom-class="demo-drawer"
     ref="drawer"
-    :visible.sync="orgTreeSetDrawer"
+    :visible.sync="orgTreeEditDrawer"
     :direction="depdirection"
     :with-header="false"
   >
@@ -32,7 +32,7 @@
 </template>
 <script>
 export default {
-  name: 'AddTopSet',
+  name: 'EditTop',
   data() {
     return {
       form: {
@@ -45,7 +45,7 @@ export default {
     }
   },
   props: {
-    orgTreeSetDrawer: {
+    orgTreeEditDrawer: {
       type: Boolean
     }
   },
@@ -59,21 +59,21 @@ export default {
       this.$confirm('确定要提交表单吗？')
         .then(_ => {
           this.loading = true
-          this.timer = setTimeout(() => {
+          this.timer = EditTimeout(() => {
             done()
             // 动画关闭需要一定的时间
-            setTimeout(() => {
+            EditTimeout(() => {
               this.loading = false
             }, 400)
           }, 2000)
-          this.$emit('changeupdateOrgTreeSetDrawer', false)
+          this.$emit('changeupdateOrgTreeEditDrawer', false)
         })
         .catch(_ => {})
     },
     //取消部门表单提交
     cancelForm() {
       this.loading = false
-      this.$emit('changeupdateOrgTreeSetDrawer', false)
+      this.$emit('changeupdateOrgTreeEditDrawer', false)
       clearTimeout(this.timer)
     }
   }

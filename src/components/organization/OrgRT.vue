@@ -9,6 +9,13 @@
         class="fl"
         @click="orgTreeSetDrawer = true"
       >设置</el-button>
+      <el-button
+        round
+        size="mini"
+        v-show="orgTreeEdit"
+        class="fl"
+        @click="orgTreeEditDrawer = true"
+      >编辑</el-button>
     </div>
     <el-button @click="depdrawer = true" class="fl">添加子部门</el-button>
     <el-table
@@ -39,6 +46,10 @@
       :orgTreeSetDrawer="orgTreeSetDrawer"
       @changeupdateOrgTreeSetDrawer="updateOrgTreeSetDrawer"
     />
+    <EditTop
+      :orgTreeSetDrawer="orgTreeSetDrawer"
+      @changeupdateOrgTreeSetDrawer="updateOrgTreeSetDrawer"
+    />
   </el-main>
 </template>
 
@@ -47,19 +58,22 @@ import Sortable from 'sortablejs'
 import AddDep from './AddDep'
 import AddRole from './AddRole'
 import AddTopSet from './AddTopSet'
+import EditTop from './EditTop'
 
 export default {
   name: 'OrgRT',
   components: {
     AddDep,
     AddRole,
-    AddTopSet
+    AddTopSet,
+    EditTop
   },
   data() {
     return {
       depdrawer: false,
       roledrawer: false,
       orgTreeSetDrawer: false,
+      orgTreeEditDrawer: false,
       hiddenTableHeader: false,
       form: {
         name: '',
@@ -101,6 +115,9 @@ export default {
     },
     orgTreeName() {
       return this.$store.state.orgTreeName
+    },
+    orgTreeEdit() {
+      return this.$store.state.orgTreeEdit
     }
   },
   mounted() {
@@ -136,6 +153,9 @@ export default {
     },
     updateOrgTreeSetDrawer(data) {
       this.orgTreeSetDrawer = data
+    },
+    updateOrgTreeEditDrawer(data) {
+      this.orgTreeEditDrawer = data
     }
   }
 }

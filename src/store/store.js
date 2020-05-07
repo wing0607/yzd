@@ -8,6 +8,7 @@ export const store = new Vuex.Store({
   state: {
     orgTreeSet: true,//组织架构树顶级设置
     orgTreeName: '',
+    orgTreeEdit: '',
     roledatas: [{
       id: 1,
       label: '一级 2221',
@@ -55,8 +56,10 @@ export const store = new Vuex.Store({
       var treeNodeId = payload.$treeNodeId
       if (treeNodeId == 1) {
         state.orgTreeSet = true
+        state.orgTreeEdit = false
       } else {
         state.orgTreeSet = false
+        state.orgTreeEdit = true
       }
     },
   },
