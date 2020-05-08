@@ -1,5 +1,5 @@
 <template>
-  <el-main>
+  <el-main id="el-main">
     <div class="orgRt-title clearfix">
       <span class="orgRt-tit fl">{{orgTreeName}}</span>
       <el-button
@@ -23,6 +23,7 @@
       row-key="id"
       :show-header="hiddenTableHeader"
       class="department-table"
+      id="department-table"
     >
       <el-table-column label="序号" prop="index" width="20px"></el-table-column>
       <el-table-column label="姓名" prop="name"></el-table-column>
@@ -40,7 +41,6 @@
       <el-table-column label="地址" prop="address"></el-table-column>
     </el-table>
     <AddDep :depdrawer="depdrawer" @changeupdateDepdrawer="updateDepdrawer" />
-
     <AddRole :roledrawer="roledrawer" @changeupdateRoledrawer="updateRoledrawer" />
     <AddTopSet
       :orgTreeSetDrawer="orgTreeSetDrawer"
@@ -122,8 +122,15 @@ export default {
   },
   mounted() {
     this.rowDrop()
+    // this.orgMainH()
   },
   methods: {
+    // orgMainH() {
+    //   this.$nextTick(function() {
+    //     let height = document.getElementById('el-main').clientHeight
+    //     console.log(height)
+    //   })
+    // },
     rowDrop() {
       const tbody = document.querySelector('.department-table tbody')
       const that = this

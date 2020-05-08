@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: 'OrgRole',
+  name: 'OrgRoleLeft',
   props: {},
   data() {
     return {

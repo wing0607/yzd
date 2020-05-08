@@ -9,6 +9,7 @@ export const store = new Vuex.Store({
     orgTreeSet: true,//组织架构树顶级设置
     orgTreeName: '',
     orgTreeEdit: '',
+    orgMainH: '',
     roledatas: [{
       id: 1,
       label: '一级 2221',
@@ -47,7 +48,12 @@ export const store = new Vuex.Store({
 
   },
   getters: {
-
+    orgMainH: (state) => {
+      // let height1 = document.getElementById('el-main').clientHeight;
+      // console.log(height1)
+      // let height2 = document.getElementById('info-box').clientHeight
+      // state.orgMainH = height1 > height2 ? height1 : height2;
+    }
   },
   mutations: {
     nodeClick: (state, payload) => {

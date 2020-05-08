@@ -8,3 +8,10 @@
   float: left;
 }
 .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{background: #0089FF; color: #fff;}
+.el-tabs__content {
+  position: absolute;
+  left: 0px;
+  top:100px;
+  overflow: inherit;right:0px;
+}
+.el-main{ position: absolute; left: 200px; top:-100px; background: #fff;    border-left: 1px solid #dedede;}
