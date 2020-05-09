@@ -1,14 +1,14 @@
 <template>
   <el-container>
     <el-input placeholder="搜索" v-model="filterText"></el-input>
-    <el-tabs v-model="activeName">
+    <el-tabs v-model="activeName" @tab-click="funRoleHeight">
       <el-tab-pane label="组织架构" name="first">
-        <OrgLeft id="OrgLeft" />
-        <OrgRT id="OrgRight" />
+        <OrgLeft id="OrgLeft" :orgHeight="orgHeight" />
+        <OrgRT id="OrgRight" :orgHeight="orgHeight" />
       </el-tab-pane>
       <el-tab-pane label="角色" name="second">
-        <OrgRoleLeft />
-        <OrgRoleRT />
+        <OrgRoleLeft id="OrgRoleLeft" :roleHeight="roleHeight" />
+        <OrgRoleRT id="OrgRoleRT" :roleRightHeight="roleRightHeight" />
       </el-tab-pane>
     </el-tabs>
   </el-container>
@@ -26,27 +26,46 @@ export default {
     OrgRoleLeft,
     OrgRoleRT
   },
+
   data() {
     return {
       activeName: 'first',
       filterText: '',
-      orgHeight: ''
+      orgHeight: '',
+      roleHeight: '',
+      roleLeftHeight: '',
+      roleRightHeight: ''
     }
   },
   mounted() {
-    this.matchHeight()
+    this.funOrgHeight()
   },
   methods: {
-    matchHeight() {
-      let height1 = document.getElementById('OrgLeft').clientHeight
+    funOrgHeight() {
+      var height1 = document.getElementById('OrgLeft').clientHeight
       var height2 = 0
       var that = this
-
       this.$nextTick(function() {
         height2 = document.getElementById('OrgRight').clientHeight
         that.orgHeight = height1 > height2 ? height1 : height2
-        console.log(that.orgHeight)
       })
+    },
+    funRoleHeight(tab, event) {
+      var index = tab.index
+      if (index == '1') {
+        var height1 = 0
+        var height2 = 0
+        var that = this
+        this.$nextTick(function() {
+          height1 = document.getElementById('OrgRoleLeft').clientHeight
+          height2 = document.getElementById('OrgRoleRT').clientHeight
+          that.roleHeight = height1 > height2 ? height1 : height2
+          that.roleLeftHeight =
+            height1 > height2 ? that.roleHeight : that.roleHeight - 100
+          that.roleRightHeight =
+            height1 > height2 ? that.roleHeight + 100 : that.roleHeight
+        })
+      }
     }
   }
 }

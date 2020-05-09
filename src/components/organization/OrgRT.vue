@@ -1,5 +1,5 @@
 <template>
-  <el-main id="el-main">
+  <el-main id="el-main" :style="{height:orgHeight+ 'px'}">
     <div class="orgRt-title clearfix">
       <span class="orgRt-tit fl">{{orgTreeName}}</span>
       <el-button
@@ -68,6 +68,7 @@ export default {
     AddTopSet,
     EditTop
   },
+  props: ['orgHeight'],
   data() {
     return {
       depdrawer: false,
@@ -122,15 +123,8 @@ export default {
   },
   mounted() {
     this.rowDrop()
-    // this.orgMainH()
   },
   methods: {
-    // orgMainH() {
-    //   this.$nextTick(function() {
-    //     let height = document.getElementById('el-main').clientHeight
-    //     console.log(height)
-    //   })
-    // },
     rowDrop() {
       const tbody = document.querySelector('.department-table tbody')
       const that = this

@@ -48,19 +48,13 @@ export const store = new Vuex.Store({
 
   },
   getters: {
-    orgMainH: (state) => {
-      // let height1 = document.getElementById('el-main').clientHeight;
-      // console.log(height1)
-      // let height2 = document.getElementById('info-box').clientHeight
-      // state.orgMainH = height1 > height2 ? height1 : height2;
-    }
+
   },
   mutations: {
     nodeClick: (state, payload) => {
-      console.log(state, payload)
-      state.orgTreeName = payload.label
-      var treeNodeId = payload.$treeNodeId
-      if (treeNodeId == 1) {
+      state.orgTreeName = payload.name
+      var parentId = payload.parentId
+      if (parentId == 1) {
         state.orgTreeSet = true
         state.orgTreeEdit = false
       } else {

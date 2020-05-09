@@ -1,5 +1,5 @@
 <template>
-  <el-main>11111</el-main>
+  <el-main :style="{height:roleRightHeight+ 'px'}">11111</el-main>
 </template>
 
 <script>
@@ -9,6 +9,7 @@ export default {
   data() {
     return {}
   },
+  props: ['roleRightHeight'],
   computed: {},
   mounted() {},
   methods: {}

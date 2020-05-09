@@ -1,5 +1,6 @@
 <template>
   <el-tree
+    :style="{height:roleLeftHeight+ 'px'}"
     class="filter-tree"
     :data="roledatas"
     :props="defaultProps"
@@ -12,7 +13,7 @@
 <script>
 export default {
   name: 'OrgRoleLeft',
-  props: {},
+  props: ['roleLeftHeight'],
   data() {
     return {
       filterText: '',

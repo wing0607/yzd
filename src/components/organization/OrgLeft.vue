@@ -1,5 +1,5 @@
 <template>
-  <el-aside width="200px" id="info-box">
+  <el-aside width="200px" id="info-box" :style="{height:orgHeight-100+ 'px'}">
     <el-tree
       class="filter-tree"
       :data="orgdatas"
@@ -20,72 +20,19 @@ import { mapActions } from 'vuex'
 export default {
   name: 'OrgLeft',
   components: {},
-  props: {},
+  props: ['orgHeight'],
   data() {
     return {
-      orgdatas: [
-        {
-          id: 111,
-          label: '组织',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1'
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1'
-            },
-            {
-              id: 6,
-              label: '二级 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1'
-            },
-            {
-              id: 8,
-              label: '二级 3-2'
-            }
-          ]
-        }
-      ],
+      orgdatas: [],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'name'
       }
     }
   },
-  computed: {
-    // orgMainH() {
-    //   return this.$store.getters.orgMainH
-    // }
-  },
+  computed: {},
   mounted() {
-    // this.matchHeight()
+    this.getOrgTree()
   },
   watch: {
     filterText(val) {
@@ -93,10 +40,33 @@ export default {
     }
   },
   methods: {
-    // matchHeight() {
-    //   let height = document.getElementById('info-box').clientHeight
-    //   console.log(height)
-    // },
+    getOrgTree() {
+      // this.axios
+      //   .post('/dept/add', { parentid: 1, name: '111', orderDept: '2222' })
+      //   .then(res => {
+      //     console.log(res)
+      //     var resData = res.data
+      //     if (resData.success == true) {
+      //       this.orgdatas = resData.result
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //   })
+
+      this.axios
+        .post('/dept/list', { parentId: 1 })
+        .then(res => {
+          console.log(res)
+          var resData = res.data
+          if (resData.success == true) {
+            this.orgdatas = resData.result
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     filterNode(value, orgdata) {
       if (!value) return true
       return orgdata.label.indexOf(value) !== -1
