@@ -1,5 +1,5 @@
 <template>
-  <el-aside width="200px" id="info-box" :style="{height:orgHeight-100+ 'px'}">
+  <el-aside width="260px" id="info-box" :style="{height:orgHeight-100+ 'px'}">
     <el-tree
       class="filter-tree"
       :data="orgdatas"
@@ -34,11 +34,7 @@ export default {
   mounted() {
     this.getOrgTree()
   },
-  watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val)
-    }
-  },
+
   methods: {
     getOrgTree() {
       // this.axios
@@ -57,7 +53,6 @@ export default {
       this.axios
         .post('/dept/list', { parentId: 1 })
         .then(res => {
-          console.log(res)
           var resData = res.data
           if (resData.success == true) {
             this.orgdatas = resData.result
@@ -67,9 +62,9 @@ export default {
           console.log(err)
         })
     },
-    filterNode(value, orgdata) {
+    filterNode(value, orgdatas) {
       if (!value) return true
-      return orgdata.label.indexOf(value) !== -1
+      return orgdatas.name.indexOf(value) !== -1
     },
 
     handleDrop(draggingNode, dropNode, dropType, ev) {

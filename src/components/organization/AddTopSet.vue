@@ -19,7 +19,11 @@
               <!-- <el-input v-model="form.topdep"></el-input> -->
               <div class="el-form-item__content">
                 <div class="el-input">
-                  <div class="el-input__inner" @click="leadDialogVisible = true"></div>
+                  <div
+                    class="el-input__inner"
+                    @click="leadDialogVisible = true"
+                    id="wing-staff-input"
+                  ></div>
                 </div>
               </div>
             </el-form-item>
@@ -80,6 +84,7 @@ export default {
             }, 400)
           }, 2000)
           this.$emit('changeupdateOrgTreeSetDrawer', false)
+          document.getElementById('wing-staff-input').innerHTML = ''
         })
         .catch(_ => {})
     },
@@ -88,6 +93,7 @@ export default {
       this.loading = false
       this.$emit('changeupdateOrgTreeSetDrawer', false)
       clearTimeout(this.timer)
+      document.getElementById('wing-staff-input').innerHTML = ''
     },
     updateLeadDialog(data) {
       this.leadDialogVisible = data
@@ -95,7 +101,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
 .addDep-header {
   position: absolute;
   top: 0px;
@@ -124,5 +130,14 @@ export default {
   padding: 10px 0px;
   margin-bottom: 0px;
   border-top: 1px solid #eee;
+}
+#wing-staff-input {
+  text-align: left;
+  cursor: pointer;
+}
+#wing-staff-input span {
+  padding: 5px;
+  background: #eee;
+  margin-left: 5px;
 }
 </style>

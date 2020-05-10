@@ -112,4 +112,7 @@ export default {
   border-top-right-radius: 14px;
   border-bottom-right-radius: 14px;
 }
+.batch-main .el-tabs__content {
+  width: 1000px;
+}
 </style>

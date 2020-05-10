@@ -48,7 +48,6 @@ export const store = new Vuex.Store({
 
   },
   getters: {
-
   },
   mutations: {
     nodeClick: (state, payload) => {
