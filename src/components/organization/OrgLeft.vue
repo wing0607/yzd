@@ -37,21 +37,8 @@ export default {
 
   methods: {
     getOrgTree() {
-      // this.axios
-      //   .post('/dept/add', { parentid: 1, name: '111', orderDept: '2222' })
-      //   .then(res => {
-      //     console.log(res)
-      //     var resData = res.data
-      //     if (resData.success == true) {
-      //       this.orgdatas = resData.result
-      //     }
-      //   })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
-
       this.axios
-        .post('/dept/list', { parentId: 1 })
+        .post('/dept/list', { parentId: 0 })
         .then(res => {
           var resData = res.data
           if (resData.success == true) {

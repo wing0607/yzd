@@ -1,5 +1,5 @@
 <template>
-  <el-main :style="{height:roleRightHeight+ 'px'}">11111</el-main>
+  <el-main class="wing-orgR-container" :style="{height:roleRightHeight+ 'px'}">11111</el-main>
 </template>
 
 <script>

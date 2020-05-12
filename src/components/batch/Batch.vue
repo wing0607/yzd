@@ -40,6 +40,7 @@ export default {
 .batch {
   width: 1000px;
   margin: 0 auto;
+  background: #fff;
 }
 .batch-header {
   background: #f2f4f5;

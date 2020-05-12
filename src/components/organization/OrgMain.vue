@@ -1,5 +1,5 @@
 <template>
-  <el-container class="wing-org-main">
+  <el-container class="wing-contain">
     <el-input placeholder="搜索" v-model="filterText"></el-input>
     <el-tabs v-model="activeName" @tab-click="funRoleHeight" class="wing-tab">
       <el-tab-pane label="组织架构" name="first">
@@ -77,13 +77,6 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.wing-org-main {
-  width: 1080px;
-  margin: 60px auto;
-  border: 1px solid #dedede;
-  background: #fff;
-  margin: 20px auto 0;
-}
 .el-container {
   position: relative;
 }

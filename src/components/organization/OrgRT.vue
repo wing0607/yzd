@@ -1,5 +1,5 @@
 <template>
-  <el-main id="el-main" :style="{height:orgHeight+ 'px'}">
+  <el-main id="el-main" class="wing-orgR-container" :style="{height:orgHeight+ 'px'}">
     <div class="orgRt-title clearfix">
       <span class="orgRt-tit fl">{{orgTreeName}}</span>
       <el-button
@@ -17,7 +17,9 @@
         @click="orgTreeEditDrawer = true"
       >编辑</el-button>
     </div>
-    <el-button @click="depdrawer = true" class="fl">添加子部门</el-button>
+    <div class="wing-gray-title clearfix">
+      <el-button @click="depdrawer = true" class="fl" round size="mini">添加子部门</el-button>
+    </div>
     <el-table
       :data="tableData"
       row-key="id"
@@ -29,11 +31,14 @@
       <el-table-column label="姓名" prop="name"></el-table-column>
       <el-table-column label="地址" prop="address"></el-table-column>
     </el-table>
-    <div class="btn-container">
-      <el-button @click="roledrawer = true" class="fl">添加成员</el-button>
-      <router-link class="el-button fl el-button--default no-underline" to="/batch">批量导入/导出/修改</router-link>
-      <el-button class="fl">调整部门</el-button>
-      <el-button class="fl">添加成员</el-button>
+    <div class="wing-gray-title clearfix">
+      <el-button @click="roledrawer = true" class="fl" round size="mini">添加成员</el-button>
+      <router-link
+        class="el-button fl el-button--default el-button--mini is-round"
+        to="/batch"
+      >批量导入/导出/修改</router-link>
+      <el-button class="fl" round size="mini">调整部门</el-button>
+      <el-button class="fl" round size="mini">添加成员</el-button>
     </div>
     <el-table :data="RtableData" row-key="id" class="role-table">
       <el-table-column label="序号" prop="index" width="50px"></el-table-column>
@@ -171,12 +176,6 @@ export default {
   margin-right: 10px;
 }
 
-.btn-container {
-  padding: 15px 0;
-}
-.el-main {
-  padding: 20px;
-}
 .no-underline {
   text-decoration: none;
 }

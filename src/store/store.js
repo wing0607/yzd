@@ -51,6 +51,7 @@ export const store = new Vuex.Store({
   },
   mutations: {
     nodeClick: (state, payload) => {
+      let id = payload.id
       state.orgTreeName = payload.name
       var parentId = payload.parentId
       if (parentId == 1) {
@@ -60,6 +61,17 @@ export const store = new Vuex.Store({
         state.orgTreeSet = false
         state.orgTreeEdit = true
       }
+      // this.axios
+      //   .post('/dept/list', { id: id })
+      //   .then(res => {
+      //     var resData = res.data
+      //     if (resData.success == true) {
+      //       console.log(resData.result)
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //   })
     },
   },
   actions: {
