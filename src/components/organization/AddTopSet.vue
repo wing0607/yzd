@@ -10,10 +10,11 @@
     >
       <div class="addDep-container">
         <div class="addDep-header">编辑部门</div>
-        <div class="addDep-main">
-          <el-form label-width="80px">
-            <el-form-item label="部门名称:">
-              <el-input v-model="form.depname"></el-input>
+        <div class="wing-drawer-main">
+          <div class="wing-drawer-title">部门信息</div>
+          <el-form label-width="100px" :model="form" :rules="rules">
+            <el-form-item label="部门名称:" prop="depname">
+              <el-input v-model="form.depname" disabled></el-input>
             </el-form-item>
             <el-form-item label="设置主管:">
               <!-- <el-input v-model="form.topdep"></el-input> -->
@@ -30,12 +31,14 @@
           </el-form>
         </div>
         <div class="addDep-footer">
-          <el-button @click="cancelForm">取 消</el-button>
-          <el-button
+          <el-button type="primary" @click="$refs.drawer.closeDrawer()">确 定</el-button>
+          <!-- <el-button
             type="primary"
             @click="$refs.drawer.closeDrawer()"
             :loading="loading"
-          >{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+          >{{ loading ? '提交中 ...' : '确 定' }}</el-button>-->
+          <el-button type="danger" @click="deleDep" plain>删除</el-button>
+          <el-button @click="cancelForm">取 消</el-button>
         </div>
       </div>
     </el-drawer>
@@ -55,7 +58,10 @@ export default {
       leadDialogVisible: false,
       depdirection: 'rtl',
       loading: false,
-      timer: null
+      timer: null,
+      rules: {
+        depname: [{ required: true }]
+      }
     }
   },
   props: {
@@ -70,23 +76,26 @@ export default {
   methods: {
     //添加部门表单提交
     handleClose(done) {
-      if (this.loading) {
-        return
-      }
-      this.$confirm('确定要提交表单吗？')
-        .then(_ => {
-          this.loading = true
-          this.timer = setTimeout(() => {
-            done()
-            // 动画关闭需要一定的时间
-            setTimeout(() => {
-              this.loading = false
-            }, 400)
-          }, 2000)
-          this.$emit('changeupdateOrgTreeSetDrawer', false)
-          document.getElementById('wing-staff-input').innerHTML = ''
-        })
-        .catch(_ => {})
+      // var that = this
+      // if (this.loading) {
+      //   return
+      // }
+      // this.$confirm('确定要提交表单吗？')
+      //   .then(_ => {
+      //     this.loading = true
+      //     this.timer = setTimeout(() => {
+      //       done()
+      //       // 动画关闭需要一定的时间
+      //       setTimeout(() => {
+      //         that.loading = false
+      //         that.$emit('changeupdateOrgTreeSetDrawer', false)
+      //         document.getElementById('wing-staff-input').innerHTML = ''
+      //       }, 400)
+      //     }, 2000)
+      //   })
+      //   .catch(_ => {})
+      this.$emit('changeupdateOrgTreeSetDrawer', false)
+      document.getElementById('wing-staff-input').innerHTML = ''
     },
     //取消部门表单提交
     cancelForm() {
@@ -97,6 +106,44 @@ export default {
     },
     updateLeadDialog(data) {
       this.leadDialogVisible = data
+    },
+    deleDep() {
+      this.$confirm('确定删除该部门?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.$emit('changeupdateOrgTreeSetDrawer', false)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+
+      // let parentId = this.$store.state.orgTreeParentId
+      //   ? this.$store.state.orgTreeParentId
+      //   : 0
+      // alert(parentId)
+      // this.axios
+      //   .post('/dept/delete', { id: parentId })
+      //   .then(res => {
+      //     console.log(res)
+      //     var resData = res.data
+      //     if (resData.success == true) {
+      //       console.log(resData.result)
+      //       //this.orgdatas = resData.result
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //   })
     }
   }
 }
@@ -114,11 +161,7 @@ export default {
   border-bottom: 1px solid #eee;
   text-align: left;
 }
-.addDep-main {
-  padding: 98px 30px 87px 30px;
-  height: 100%;
-  overflow-y: auto;
-}
+
 .addDep-footer {
   position: absolute;
   bottom: 0px;

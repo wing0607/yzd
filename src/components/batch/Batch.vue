@@ -50,6 +50,7 @@ export default {
   position: relative;
   font-size: 14px;
   color: #111f2c;
+  text-align: center;
 }
 .fl {
   float: left;

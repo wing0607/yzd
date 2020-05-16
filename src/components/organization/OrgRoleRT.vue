@@ -1,5 +1,12 @@
 <template>
-  <el-main class="wing-orgR-container" :style="{height:roleRightHeight+ 'px'}">11111</el-main>
+  <el-main class="wing-orgR-container" :style="{height:roleHeight+ 'px'}">
+    <div class="wing-role-img">
+      <img src="../../assets/img/role-img.png" />
+    </div>
+    <div class="wing-role-btn-container">
+      <el-button round size="mini" type="primary">新增角色</el-button>
+    </div>
+  </el-main>
 </template>
 
 <script>
@@ -9,11 +16,18 @@ export default {
   data() {
     return {}
   },
-  props: ['roleRightHeight'],
+  props: ['roleHeight'],
   computed: {},
   mounted() {},
   methods: {}
 }
 </script>
 <style scoped>
+.wing-role-img img {
+  width: 100%;
+}
+.wing-role-btn-container {
+  padding: 10px 0;
+  text-align: center;
+}
 </style>

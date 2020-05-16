@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import axios from 'axios'
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   strict: true,
   state: {
-    orgTreeSet: true,//组织架构树顶级设置
+    orgTreeSet: true,//组织架构树顶级设置按钮显示
+    orgTreeParentId: '',//获取组织架构parentId
     orgTreeName: '',
     orgTreeEdit: '',
     orgMainH: '',
@@ -51,31 +52,23 @@ export const store = new Vuex.Store({
   },
   mutations: {
     nodeClick: (state, payload) => {
-      let id = payload.id
+      console.log(state, payload)
+      state.orgTreeParentId = payload.id
       state.orgTreeName = payload.name
       var parentId = payload.parentId
-      if (parentId == 1) {
+      if (parentId == 0) {
         state.orgTreeSet = true
         state.orgTreeEdit = false
       } else {
         state.orgTreeSet = false
         state.orgTreeEdit = true
       }
-      // this.axios
-      //   .post('/dept/list', { id: id })
-      //   .then(res => {
-      //     var resData = res.data
-      //     if (resData.success == true) {
-      //       console.log(resData.result)
-      //     }
-      //   })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
+
     },
   },
   actions: {
     nodeClick: (context, payload) => {
+      console.log(context, payload)
       context.commit("nodeClick", payload);
     }
 

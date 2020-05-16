@@ -20,12 +20,13 @@
         </el-form>
       </div>
       <div class="addDep-footer">
-        <el-button @click="cancelForm">取 消</el-button>
         <el-button
           type="primary"
           @click="$refs.drawer.closeDrawer()"
           :loading="loading"
         >{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+        <el-button type="danger" @click="deleDep">删除</el-button>
+        <el-button @click="cancelForm">取 消</el-button>
       </div>
     </div>
   </el-drawer>
@@ -75,7 +76,8 @@ export default {
       this.loading = false
       this.$emit('changeupdateOrgTreeEditDrawer', false)
       clearTimeout(this.timer)
-    }
+    },
+    deleDep() {}
   }
 }
 </script>

@@ -43,6 +43,7 @@ export default {
 .batchIn-main-right {
   float: left;
   width: 50%;
+  text-align: center;
 }
 .batchIn-main::after {
   content: ' ';
@@ -61,6 +62,7 @@ export default {
 }
 .batchIn-content {
   border-right: 1px dashed #ddd;
+  text-align: center;
 }
 .batchIn-main .batchIn-btn {
   line-height: 28px;

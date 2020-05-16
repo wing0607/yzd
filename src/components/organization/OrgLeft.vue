@@ -5,6 +5,7 @@
       :data="orgdatas"
       :props="defaultProps"
       :filter-node-method="filterNode"
+      node-key="id"
       default-expand-all
       highlight-current
       draggable
@@ -31,18 +32,19 @@ export default {
     }
   },
   computed: {},
-  mounted() {
+  created() {
     this.getOrgTree()
   },
-
+  mounted() {},
   methods: {
     getOrgTree() {
+      var token = localStorage.token
       this.axios
-        .post('/dept/list', { parentId: 0 })
+        .post('/company/dept/listTree', { parentId: -1 })
         .then(res => {
           var resData = res.data
-          if (resData.success == true) {
-            this.orgdatas = resData.result
+          if (res.status == 200) {
+            this.orgdatas = resData.results
           }
         })
         .catch(err => {

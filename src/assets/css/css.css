@@ -32,6 +32,7 @@ a{ text-decoration: none;}
   left: 260px; top:-100px; 
   background: #fff;
   border-left: 1px solid #dedede;
+ 
 }
 .el-aside {
   padding:0 0 15px 0;
@@ -46,4 +47,23 @@ a{ text-decoration: none;}
   margin: 0 auto;
   border: 1px solid #dedede;
   background: #fff;
+}
+.wing-text-aligin-center{
+  text-align: center;
+}
+.wing-drawer-title{
+  padding: 0px 15px;
+  min-height: 38px;
+  background: #eceff4;
+  line-height: 38px;
+  margin-bottom: 18px;
+}
+.wing-drawer-main {
+ position: absolute;
+ left: 0;
+ top:65px;
+ right: 0;
+ bottom: 60px;
+ overflow-y: auto;
+ padding: 30px;
 }

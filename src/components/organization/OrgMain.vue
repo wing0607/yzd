@@ -8,7 +8,7 @@
       </el-tab-pane>
       <el-tab-pane label="角色" name="second">
         <OrgRoleLeft id="OrgRoleLeft" :roleHeight="roleHeight" />
-        <OrgRoleRT id="OrgRoleRT" :roleRightHeight="roleRightHeight" />
+        <OrgRoleRT id="OrgRoleRT" :roleHeight="roleHeight" />
       </el-tab-pane>
     </el-tabs>
   </el-container>
@@ -32,11 +32,12 @@ export default {
       activeName: 'first',
       filterText: '',
       orgHeight: '',
-      roleHeight: '',
-      roleLeftHeight: '',
-      roleRightHeight: ''
+      roleHeight: ''
+      // roleLeftHeight: '',
+      // roleRightHeight: ''
     }
   },
+
   mounted() {
     this.funOrgHeight()
   },
@@ -53,6 +54,7 @@ export default {
       this.$nextTick(function() {
         height2 = document.getElementById('OrgRight').clientHeight
         that.orgHeight = height1 > height2 ? height1 : height2
+        console.log(that.orgHeight)
       })
     },
     funRoleHeight(tab, event) {
@@ -64,11 +66,13 @@ export default {
         this.$nextTick(function() {
           height1 = document.getElementById('OrgRoleLeft').clientHeight
           height2 = document.getElementById('OrgRoleRT').clientHeight
+          console.log(height1, height2)
           that.roleHeight = height1 > height2 ? height1 : height2
-          that.roleLeftHeight =
-            height1 > height2 ? that.roleHeight : that.roleHeight - 100
-          that.roleRightHeight =
-            height1 > height2 ? that.roleHeight + 100 : that.roleHeight
+          // that.roleLeftHeight =
+          //   height1 > height2 ? that.roleHeight : that.roleHeight
+          // that.roleRightHeight =
+          //   height1 > height2 ? that.roleHeight + 100 : that.roleHeight
+          console.log(that.roleHeight)
         })
       }
     }

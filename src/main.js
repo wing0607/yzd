@@ -4,7 +4,7 @@ import './plugins/element.js'
 import { store } from './store/store'
 import VueRouter from 'vue-router'
 import Routes from './path/routes.js'
-import './assets/css.css'
+import './assets/css/css.css'
 import axios from './axios/axios'
 Vue.prototype.axios = axios;
 

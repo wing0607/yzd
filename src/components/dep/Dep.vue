@@ -4,7 +4,11 @@
     <p class="dep-tip">在这里创建、编辑和批量修改部门设置</p>
     <div class="wing-gray-title clearfix">
       <el-button class="fl" round size="mini">添加部门</el-button>
-      <el-button class="fl" round size="mini">批量创建部门</el-button>
+      <router-link
+        class="el-button fl el-button--default el-button--mini is-round"
+        to="/depBatch"
+      >批量创建部门</router-link>
+
       <el-button class="fr" round size="mini">编辑选中部门</el-button>
       <el-button class="fr" round size="mini">删除选中部门</el-button>
     </div>
