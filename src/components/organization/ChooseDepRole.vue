@@ -43,15 +43,15 @@ export default {
   mounted() {},
   watch: {
     chooseDepRoleVisible() {
-      this.orgDepTable()
+      this.orgDepTable(1)
     }
   },
   methods: {
     //获取部门
-    orgDepTable() {
+    orgDepTable(deptId) {
       var that = this
       this.axios
-        .post('/company/dept/oneInfo', { deptId: 1 })
+        .post('/company/dept/oneInfo', { deptId: deptId })
         .then(res => {
           var resData = res.data
           if (resData.code == 0) {
@@ -118,7 +118,8 @@ export default {
     },
 
     renderFunc(h, option) {
-      console.log(option)
+      debugger
+      console.log(h)
       var that = this
       if (option.type == 'dept') {
         return h('div', { attrs: { class: 'clearfix' } }, [
@@ -137,7 +138,7 @@ export default {
           )
         ])
       } else if (option.type == 'user') {
-        return h('div', { attrs: { class: 'clearfix' } }, option.label)
+        return h('p', option.label)
       }
       // var that = this
       // var isHide = false
