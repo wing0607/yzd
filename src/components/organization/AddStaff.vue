@@ -1,24 +1,25 @@
 <template>
-  <div class="wing-container">
+  <div>
     <el-drawer
       :before-close="handleClose"
       custom-class="demo-drawer"
       ref="drawer"
-      :visible.sync="depdrawer"
-      :direction="depdirection"
       :with-header="false"
+      :visible.sync="roledrawer"
+      :direction="roledirection"
       :modal="false"
     >
       <div class="addDep-container">
-        <div class="addDep-header">添加部门</div>
-        <div class="wing-drawer-main">
-          <div class="wing-drawer-title">部门信息</div>
-          <el-form label-width="100px">
-            <el-form-item label="部门名称:" prop="depname">
-              <el-input v-model="depname"></el-input>
+        <div class="addDep-header">添加成员</div>
+        <div class="addDep-main">
+          <el-form label-width="80px">
+            <el-form-item label="姓名:">
+              <el-input v-model="form.realname"></el-input>
             </el-form-item>
-            <el-form-item label="上级部门">
-              <!-- <el-input v-model="form.topdep" @click="chooseDepDialogVisible = true"></el-input> -->
+            <el-form-item label="手机:">
+              <el-input v-model="form.phone"></el-input>
+            </el-form-item>
+            <el-form-item label="部门:">
               <div class="el-form-item__content">
                 <div class="el-input">
                   <div
@@ -28,11 +29,18 @@
                   >{{parDepName}}</div>
                 </div>
               </div>
+              <!-- <el-input v-model="form.departments"></el-input> -->
             </el-form-item>
+            <!-- <el-form-item label="职位:">
+              <el-input v-model="form.job"></el-input>
+            </el-form-item>-->
+            <!-- <el-form-item label="邮箱:">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>-->
           </el-form>
         </div>
         <div class="addDep-footer">
-          <el-button type="primary" @click="$refs.drawer.closeDrawer()">保存</el-button>
+          <el-button type="primary" @click="$refs.drawer.closeDrawer()">确 定</el-button>
           <el-button @click="cancelForm">取 消</el-button>
         </div>
       </div>
@@ -49,22 +57,20 @@ export default {
   name: 'AddDep',
   data() {
     return {
-      depname: '',
-      depdirection: 'rtl',
+      form: {
+        realname: '',
+        phone: '',
+        departments: ''
+      },
+      chooseDepDialogVisible: false,
+      roledirection: 'rtl',
       loading: false,
-      timer: null,
-      chooseDepDialogVisible: false
-      // rules: {
-      //   depname: [
-      //     { required: true, message: '请输入部门名称', trigger: 'change' }
-      //   ]
-      //   // topdep: [{ required: true, message: '请选择上级部门' }]
-      // }
+      timer: null
     }
   },
   inject: ['reload'],
   props: {
-    depdrawer: {
+    roledrawer: {
       type: Boolean
     }
   },
@@ -76,25 +82,46 @@ export default {
       return this.$store.state.orgDep.depName
     }
   },
-
   methods: {
     updateChooseDepDialog(data) {
       this.chooseDepDialogVisible = data
     },
-    //添加部门表单提交
+    //添加成员表单提交
     handleClose(done) {
-      console.log(this.$store.state.orgDep.depName)
-      if (this.depname == '') {
+      console.log(this.form.realname)
+      if (this.form.realname == '') {
         this.$message({
           type: 'danger',
-          message: '请输入部门名称!'
+          message: '人员名称不能为空!'
         })
         return
       }
+      if (this.form.phone == '') {
+        this.$message({
+          type: 'danger',
+          message: '手机号不能为空!'
+        })
+        return
+      }
+      if (!/^1[3456789]\d{9}$/.test(this.form.phone)) {
+        this.$message({
+          type: 'danger',
+          message: '请输入正确的手机号!'
+        })
+        return
+      }
+      // if (this.$store.state.orgDep.depId == '') {
+      //   this.$message({
+      //     type: 'danger',
+      //     message: '部门名称不能为空!'
+      //   })
+      //   return
+      // }
       this.axios
-        .post('/company/dept/add', {
-          name: this.depname,
-          parentId: this.$store.state.orgDep.depId
+        .post('/company/user/add', {
+          departments: this.$store.state.orgDep.depId,
+          mobile: this.form.phone,
+          realname: this.form.realname
         })
         .then(res => {
           console.log(res)
@@ -103,7 +130,7 @@ export default {
             // var results = resData.results
             this.$message({
               type: 'success',
-              message: '新增部门成功!'
+              message: '新增部门人员成功!'
             })
             this.reload()
           } else {
@@ -113,12 +140,17 @@ export default {
         .catch(err => {
           console.log(err)
         })
-      this.$emit('changeupdateDepdrawer', false)
+      ;(this.form = {
+        realname: '',
+        phone: '',
+        departments: ''
+      }),
+        this.$emit('changeupdateRoledrawer', false)
     },
-    //取消部门表单提交
+    //取消成员表单提交
     cancelForm() {
       this.loading = false
-      this.$emit('changeupdateDepdrawer', false)
+      this.$emit('changeupdateRoledrawer', false)
       clearTimeout(this.timer)
     }
   }
@@ -137,7 +169,11 @@ export default {
   border-bottom: 1px solid #eee;
   text-align: left;
 }
-
+.addDep-main {
+  padding: 98px 30px 87px 30px;
+  height: 100%;
+  overflow-y: auto;
+}
 .addDep-footer {
   position: absolute;
   bottom: 0px;

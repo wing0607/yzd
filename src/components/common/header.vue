@@ -2,7 +2,9 @@
   <div class="wing-header">
     <div class="wing-top-header">
       <div class="wing-top-head clearfix">
-        <div class="wing-top-head-left fl"></div>
+        <div class="wing-top-head-left fl">
+          <img src="../../assets/img/logo-img.png" />
+        </div>
         <div class="wing-top-head-center fl">
           <ul class="clearfix">
             <li>

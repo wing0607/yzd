@@ -1,23 +1,44 @@
 <template>
-  <el-container class="wing-contain">
-    <el-input placeholder="搜索" v-model="filterText"></el-input>
-    <el-tabs v-model="activeName" @tab-click="funRoleHeight" class="wing-tab">
-      <el-tab-pane label="组织架构" name="first">
-        <OrgLeft id="OrgLeft" :orgHeight="orgHeight" ref="first" />
-        <OrgRT id="OrgRight" :orgHeight="orgHeight" />
-      </el-tab-pane>
-      <el-tab-pane label="角色" name="second">
-        <OrgRoleLeft id="OrgRoleLeft" :roleHeight="roleHeight" />
-        <OrgRoleRT id="OrgRoleRT" :roleHeight="roleHeight" />
-      </el-tab-pane>
-    </el-tabs>
-  </el-container>
+  <div>
+    <el-container class="wing-contain">
+      <el-input placeholder="搜索" v-model="filterText"></el-input>
+      <el-tabs v-model="activeName" @tab-click="funRoleHeight" class="wing-tab">
+        <el-tab-pane label="组织架构" name="first">
+          <div
+            id="OrgLeft"
+            class="wing-org-left"
+            width="260px"
+            :style="{height:orgHeight-100+ 'px'}"
+          >
+            <OrgLeft id="OrgLeftMain" ref="first" />
+          </div>
+          <div id="OrgRight" class="wing-orgR-container" :style="{height:orgHeight+ 'px'}">
+            <OrgRT id="OrgRightMain" />
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="角色" name="second">
+          <div
+            id="OrgRoleLeft"
+            class="wing-org-left"
+            width="260px"
+            :style="{height:roleHeight-100+ 'px'}"
+          >
+            <OrgRoleLeft :roleHeight="roleHeight" />
+          </div>
+          <div id="OrgRoleRight" class="wing-orgR-container" :style="{height:roleHeight+ 'px'}">
+            <OrgRoleRT id="OrgRoleRT" :roleHeight="roleHeight" />
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </el-container>
+  </div>
 </template>
 <script>
 import OrgLeft from './OrgLeft'
 import OrgRT from './OrgRT'
 import OrgRoleLeft from './OrgRoleLeft'
 import OrgRoleRT from './OrgRoleRT'
+
 export default {
   name: 'OrgMain',
   components: {
@@ -39,23 +60,49 @@ export default {
   },
 
   mounted() {
-    this.funOrgHeight()
+    setTimeout(() => {
+      this.funOrgHeight()
+    }, 300)
+  },
+  computed: {
+    parentId() {
+      return this.$store.state.orgDep.depId
+    },
+    roleParentId() {
+      return this.$store.state.orgRole.parentId
+    }
   },
   watch: {
     filterText(val) {
       this.$refs.first.$refs.tree.filter(val)
+    },
+    parentId(newId, oldId) {
+      var that = this
+      setTimeout(() => {
+        that.funOrgHeight()
+      }, 500)
+    },
+    roleParentId(newId, oldId) {
+      var that = this
+      setTimeout(() => {
+        // that.funOrgHeight()
+      }, 300)
     }
   },
   methods: {
     funOrgHeight() {
-      var height1 = document.getElementById('OrgLeft').clientHeight
+      var height1 = document.getElementById('OrgLeftMain').clientHeight + 100
       var height2 = 0
       var that = this
-      this.$nextTick(function() {
-        height2 = document.getElementById('OrgRight').clientHeight
+      setTimeout(() => {
+        height2 = document.getElementById('OrgRightMain').clientHeight
         that.orgHeight = height1 > height2 ? height1 : height2
-        console.log(that.orgHeight)
-      })
+        console.log(height2)
+      }, 200)
+
+      // this.$nextTick(function() {
+
+      // })
     },
     funRoleHeight(tab, event) {
       var index = tab.index
@@ -64,14 +111,11 @@ export default {
         var height2 = 0
         var that = this
         this.$nextTick(function() {
-          height1 = document.getElementById('OrgRoleLeft').clientHeight
+          height1 = document.getElementById('OrgRoleLeft').clientHeight + 100
           height2 = document.getElementById('OrgRoleRT').clientHeight
           console.log(height1, height2)
           that.roleHeight = height1 > height2 ? height1 : height2
-          // that.roleLeftHeight =
-          //   height1 > height2 ? that.roleHeight : that.roleHeight
-          // that.roleRightHeight =
-          //   height1 > height2 ? that.roleHeight + 100 : that.roleHeight
+
           console.log(that.roleHeight)
         })
       }
@@ -81,6 +125,9 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.wing-org-left {
+  background: #f4f6f8;
+}
 .el-container {
   position: relative;
 }

@@ -1,16 +1,37 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <Header />
+    <router-view v-if="isRouterAlive"></router-view>
   </div>
 </template>
 
 <script>
 import OrgMain from './components/organization/OrgMain.vue'
+import Header from './components/common/Header'
 
 export default {
   name: 'app',
+  provide() {
+    return {
+      reload: this.reload
+    }
+  },
+  data() {
+    return {
+      isRouterAlive: true
+    }
+  },
   components: {
-    OrgMain
+    OrgMain,
+    Header
+  },
+  methods: {
+    reload() {
+      this.isRouterAlive = false
+      this.$nextTick(function() {
+        this.isRouterAlive = true
+      })
+    }
   }
 }
 </script>

@@ -10,16 +10,9 @@
     <el-transfer
       style="text-align: left; display: inline-block"
       v-model="value"
-      filterable
-      :render-content="renderFunc"
-      :titles="['全选', '全选']"
-      :format="{
-        noChecked: '${total}',
-        hasChecked: '${checked}/${total}'
-      }"
-      @change="handleChange"
       :data="data"
       class="wing-transfer"
+      @change="handleChange"
     ></el-transfer>
     <span slot="footer" class="dialog-footer">
       <el-button @click="updateLeadDialog">取 消</el-button>
@@ -32,41 +25,96 @@ export default {
   name: 'LeadDialog',
   props: ['leadDialogVisible'],
   data() {
-    const generateData = _ => {
-      const data = []
-      for (let i = 1; i <= 15; i++) {
-        data.push({
-          key: `备选项${i}`
-          // label: `备选项 ${i}`
-        })
-      }
-      return data
+    var depManager = this.$store.state.orgDep.depManager
+    var rData = []
+    for (var i = 0; i < depManager.length; i++) {
+      rData.push(depManager[i])
     }
     return {
-      data: generateData(),
-      value: [],
-      staffArrs: [],
-      renderFunc(h, option) {
-        return <span>{option.key}</span>
-      }
+      data: [],
+      value: rData,
+      staffArrs: []
+    }
+  },
+  computed: {},
+  mounted() {},
+  watch: {
+    leadDialogVisible() {
+      this.generateData()
     }
   },
 
+  created() {},
   methods: {
+    generateData() {
+      const that = this
+      var depId = this.$store.state.orgDep.depId
+      that.data = []
+      console.log(depId)
+      this.axios
+        .post('/company/user/list', { deptId: depId })
+        .then(res => {
+          console.log(res)
+          var resData = res.data
+          if (resData.code == 0) {
+            var results = resData.results
+            for (let i = 0; i < results.length; i++) {
+              that.data.push({
+                key: results[i].id,
+                label: results[i].realname
+              })
+            }
+          }
+        })
+        .catch(err => {
+          //console.log(err)
+        })
+    },
     updateLeadDialog() {
       this.$emit('changeLeadDialog', false)
     },
     handleChange(value, direction, movedKeys) {
+      var arr = [],
+        depManagerArr = []
+      //  console.log(movedKeys)
       if (direction == 'right') {
-        this.staffArrs = value
+        console.log(this.data)
+        var len = this.data.length
+        for (var j = 0; j < value.length; j++) {
+          for (var i = 0; i < len; i++) {
+            console.log(this.data[i].key)
+            if (this.data[i].key == value[j]) {
+              arr.push({
+                key: this.data[i].key,
+                label: this.data[i].label
+              })
+              depManagerArr.push({
+                id: this.data[i].key,
+                name: this.data[i].label
+              })
+            }
+          }
+        }
+        console.log(arr)
+        var orgDep = {
+          depId: this.$store.state.orgDep.depId,
+          depName: this.$store.state.orgDep.depName,
+          depManager: depManagerArr,
+          depParentManager: this.$store.state.orgDep.depParentManager,
+          userCount: this.$store.state.orgDep.userCount,
+          parentId: this.$store.state.orgDep.parentId
+        }
+        this.$store.dispatch('orgDep', orgDep)
       }
     },
     saveLeadDialog() {
+      var depManager = this.$store.state.orgDep.depManager
+      console.log(depManager)
       this.$emit('changeLeadDialog', false)
-      var len = this.staffArrs.length
+      var len = depManager.length
       var str = ''
       for (let i = 0; i < len; i++) {
-        str += `<span>${this.staffArrs[i]}</span>`
+        str += `<span>${depManager[i].name}</span>`
       }
       document.getElementById('wing-staff-input').innerHTML = str
     }

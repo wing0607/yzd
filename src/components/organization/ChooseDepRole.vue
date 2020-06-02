@@ -1,8 +1,8 @@
 <template>
   <el-dialog
     title="选择部门"
-    :before-close="updateChooseDepDialog"
-    :visible.sync="chooseDepDialogVisible"
+    :before-close="updateChooseDepRole"
+    :visible.sync="chooseDepRoleVisible"
     width="650px"
     center
     class="wing-dialog"
@@ -24,61 +24,68 @@
       class="wing-transfer"
     ></el-transfer>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="updateChooseDepDialog">取 消</el-button>
-      <el-button type="primary" @click="saveChooseDepDialog">确 定</el-button>
+      <el-button @click="updateChooseDepRole">取 消</el-button>
+      <el-button type="primary" @click="saveChooseDepRole">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
 export default {
-  name: 'ChooseDepDialog',
-  props: ['chooseDepDialogVisible'],
+  name: 'ChooseDepRole',
+  props: ['chooseDepRoleVisible'],
   data() {
-    // const generateData = _ => {
-    //   const data = []
-    //   for (let i = 1; i <= 15; i++) {
-    //     data.push({
-    //       key: i,
-    //       label: `备选项 ${i}`
-    //     })
-    //   }
-    //   return data
-    // }
     return {
       data: [],
       value: [],
       staffArrs: []
-      // renderFunc(h, option) {
-      //   return <span>{option.key}</span>
-      // }
     }
   },
-  mounted() {
-    setTimeout(() => {
-      this.orgDepTable(-1)
-    }, 1000)
+  mounted() {},
+  watch: {
+    chooseDepRoleVisible() {
+      this.orgDepTable()
+    }
   },
   methods: {
     //获取部门
-    orgDepTable(parentId) {
-      console.log(parentId)
+    orgDepTable() {
       var that = this
       this.axios
-        .post('/company/dept/listTree', { parentId: parentId })
+        .post('/company/dept/oneInfo', { deptId: 1 })
         .then(res => {
           var resData = res.data
           if (resData.code == 0) {
             var results = resData.results
             this.data = []
             console.log(resData.results)
-            for (let i = 0; i < results.length; i++) {
-              this.data.push({
-                key: results[i].id,
-                label: results[i].name,
-                children: results[i].children
+            var deptUsers = results.deptUsers
+            var subDepts = results.subDepts
+            var arr = []
+            for (var i = 0; i < deptUsers.length; i++) {
+              arr.push({
+                key: deptUsers[i].id,
+                label: deptUsers[i].realname,
+                type: deptUsers[i].type
               })
             }
+            for (var i = 0; i < subDepts.length; i++) {
+              arr.push({
+                key: subDepts[i].id,
+                label: subDepts[i].name,
+                type: subDepts[i].type
+              })
+            }
+            console.log(arr)
+            this.data = arr
+            // for (let i = 0; i < results.length; i++) {
+            //   this.data.push({
+            //     key: results[i].id,
+            //     label: results[i].name,
+            //     children: results[i].children
+            //   })
+            // }
           }
+
           return this.data
         })
         .catch(err => {
@@ -113,29 +120,49 @@ export default {
     renderFunc(h, option) {
       console.log(option)
       var that = this
-      var isHide = false
-      if (option.children.length == 0) {
-        isHide = true
-      }
-      return h('div', { attrs: { class: 'clearfix' } }, [
-        h('p', { attrs: { class: 'fl' } }, option.label),
-        h(
-          'p',
-          {
-            class: { isHide: isHide },
-            style: { float: 'right' },
-            on: {
-              click: function() {
-                that.orgDepTable(option.key)
+      if (option.type == 'dept') {
+        return h('div', { attrs: { class: 'clearfix' } }, [
+          h('p', { attrs: { class: 'fl' } }, option.label),
+          h(
+            'p',
+            {
+              style: { float: 'right' },
+              on: {
+                click: function() {
+                  that.orgDepTable(option.key)
+                }
               }
-            }
-          },
-          '下级'
-        )
-      ])
+            },
+            '下级'
+          )
+        ])
+      } else if (option.type == 'user') {
+        return h('div', { attrs: { class: 'clearfix' } }, option.label)
+      }
+      // var that = this
+      // var isHide = false
+      // if (option.children.length == 0) {
+      //   isHide = true
+      // }
+      // return h('div', { attrs: { class: 'clearfix' } }, [
+      //   h('p', { attrs: { class: 'fl' } }, option.label),
+      //   h(
+      //     'p',
+      //     {
+      //       class: { isHide: isHide },
+      //       style: { float: 'right' },
+      //       on: {
+      //         click: function() {
+      //           that.orgDepTable(option.key)
+      //         }
+      //       }
+      //     },
+      //     '下级'
+      //   )
+      // ])
     },
-    updateChooseDepDialog() {
-      this.$emit('changeChooseDepDialog', false)
+    updateChooseDepRole() {
+      this.$emit('updateChooseDepRole', false)
     },
     handleChange(value, direction, movedKeys) {
       console.log(value)
@@ -169,8 +196,8 @@ export default {
         }
       }
     },
-    saveChooseDepDialog() {
-      this.$emit('changeChooseDepDialog', false)
+    saveChooseDepRole() {
+      this.$emit('updateChooseDepRole', false)
       var len = this.staffArrs.length
       var str = ''
       for (let i = 0; i < len; i++) {

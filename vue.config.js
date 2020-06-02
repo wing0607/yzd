@@ -7,6 +7,7 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'http://192.168.0.68:8992',    // 目标 API 地址
+        //target: 'http://192.168.0.49:8992',
         changeOrigin: true,
         pathRewrite: {
           '^/api': '',//重写,

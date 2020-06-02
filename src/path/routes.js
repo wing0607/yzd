@@ -8,6 +8,7 @@ export default [
   { path: "/org", component: OrgMain },
   { path: "/batch", component: Batch },
   { path: "/dep", component: Dep },
-  { path: "/DepBatch", component: DepBatch },
+  { path: "/DepBatch", component: DepBatch }
+
 
 ]

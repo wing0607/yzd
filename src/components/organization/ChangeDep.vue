@@ -1,8 +1,8 @@
 <template>
   <el-dialog
-    title="选择部门"
-    :before-close="updateChooseDepDialog"
-    :visible.sync="chooseDepDialogVisible"
+    title="调整部门"
+    :before-close="updateChangeDep"
+    :visible.sync="changeDepVisible"
     width="650px"
     center
     class="wing-dialog"
@@ -24,33 +24,21 @@
       class="wing-transfer"
     ></el-transfer>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="updateChooseDepDialog">取 消</el-button>
-      <el-button type="primary" @click="saveChooseDepDialog">确 定</el-button>
+      <el-button @click="updateChangeDep">取 消</el-button>
+      <el-button type="primary" @click="saveChangeDep">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
 export default {
-  name: 'ChooseDepDialog',
-  props: ['chooseDepDialogVisible'],
+  name: 'ChangeDep',
+  props: ['changeDepVisible', 'multipleSelection'],
+  inject: ['reload'],
   data() {
-    // const generateData = _ => {
-    //   const data = []
-    //   for (let i = 1; i <= 15; i++) {
-    //     data.push({
-    //       key: i,
-    //       label: `备选项 ${i}`
-    //     })
-    //   }
-    //   return data
-    // }
     return {
       data: [],
       value: [],
       staffArrs: []
-      // renderFunc(h, option) {
-      //   return <span>{option.key}</span>
-      // }
     }
   },
   mounted() {
@@ -85,30 +73,8 @@ export default {
           console.log(err)
         })
     },
-    leftCheckChoose(e) {
-      console.log(e)
-      let len = this.data.length
-      if (e.length == 0) {
-        for (var i = 0; i < len; i++) {
-          this.data[i].disabled = false
-        }
-      } else {
-        for (var i = 0; i < len; i++) {
-          if (this.data[i].key == e[0]) {
-            this.data[i].disabled = false
-          } else {
-            this.data[i].disabled = true
-          }
-        }
-      }
-    },
-    rightCheckChoose(e) {
-      // console.log(e)
-      // let len = this.data.length
-      // for (var i = 0; i < len; i++) {
-      //   this.data[i].disabled = false
-      // }
-    },
+    leftCheckChoose(e) {},
+    rightCheckChoose(e) {},
 
     renderFunc(h, option) {
       console.log(option)
@@ -134,8 +100,8 @@ export default {
         )
       ])
     },
-    updateChooseDepDialog() {
-      this.$emit('changeChooseDepDialog', false)
+    updateChangeDep() {
+      this.$emit('updateChangeDep', false)
     },
     handleChange(value, direction, movedKeys) {
       console.log(value)
@@ -145,22 +111,21 @@ export default {
         this.staffArrs = []
         for (var i = 0; i < len; i++) {
           console.log(this.data[i].key)
-          if (this.data[i].key == value[0]) {
-            this.staffArrs.push({
-              key: this.data[i].key,
-              label: this.data[i].label
-            })
-            console.log(this.staffArrs[0].label)
-            var orgDep = {
-              depId: this.staffArrs[0].key,
-              depName: this.staffArrs[0].label,
-              depManager: this.$store.state.orgDep.depManager,
-              depParentManager: this.$store.state.orgDep.depParentManager,
-              userCount: this.$store.state.orgDep.userCount,
-              parentId: this.$store.state.orgDep.parentId
-            }
-            this.$store.dispatch('orgDep', orgDep)
-          }
+
+          this.staffArrs.push({
+            key: this.data[i].key,
+            label: this.data[i].label
+          })
+
+          // var orgDep = {
+          //   depId: this.staffArrs[0].key,
+          //   depName: this.staffArrs[0].label,
+          //   depManager: this.$store.state.orgDep.depManager,
+          //   depParentManager: this.$store.state.orgDep.depParentManager,
+          //   userCount: this.$store.state.orgDep.userCount,
+          //   parentId: this.$store.state.orgDep.parentId
+          // }
+          // this.$store.dispatch('orgDep', orgDep)
         }
       } else if (direction == 'left') {
         let len = this.data.length
@@ -169,14 +134,41 @@ export default {
         }
       }
     },
-    saveChooseDepDialog() {
-      this.$emit('changeChooseDepDialog', false)
-      var len = this.staffArrs.length
-      var str = ''
-      for (let i = 0; i < len; i++) {
-        str += `<span>${this.staffArrs[i].label}</span>`
+    saveChangeDep() {
+      this.$emit('updateChangeDep', false)
+      var userIds = []
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        userIds.push(this.multipleSelection[i].id)
       }
-      document.getElementById('wing-staff-input-add').innerHTML = str
+      var data = {
+        deptId: this.$store.state.orgDep.depId,
+        newDeptIds: this.value,
+        userIds: userIds
+      }
+      console.log(data)
+      this.axios
+        .post('/company/user/changeDept', data)
+        .then(res => {
+          console.log(res)
+          var resData = res.data
+          if (resData.code == 0) {
+            this.$message({
+              type: 'success',
+              message: '调整部门成功!'
+            })
+            this.reload()
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+      // var len = this.staffArrs.length
+      // var str = ''
+      // for (let i = 0; i < len; i++) {
+      //   str += `<span>${this.staffArrs[i].label}</span>`
+      // }
+      // document.getElementById('wing-staff-input-add').innerHTML = str
     }
   }
 }

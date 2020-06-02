@@ -19,19 +19,24 @@ function endLoading() {    //使用Element loading-close 方法
 axios.interceptors.request.use(config => {
   // 加载
   startLoading()
-  if (localStorage.token)
+  if (localStorage.token) {
     config.baseURL = '/api'
-  config.headers.Authorization = localStorage.token
+    config.timeout = 10000
+    config.headers.Authorization = localStorage.token
+    config.headers['content-type'] = 'application/json';
+  }
   return config
 }, error => {
   return Promise.reject(error)
 })
 
-// 响应拦截  401 token过期处理
+// 响应拦截  1006 token过期处理
 axios.interceptors.response.use(response => {
+  console.log(response)
   endLoading()
   return response
 }, error => {
+  console.log(error)
   // 错误提醒
   endLoading()
   Message.error(error.response.data)

@@ -14,6 +14,11 @@ export default {
   methods: {
     Login() {
       this.axios
+        .create({
+          baseURL: '/api',
+          timeout: 10000,
+          headers: { 'Content-Type': 'application/json' }
+        })
         .post(
           '/login',
           qs.stringify({
@@ -24,11 +29,14 @@ export default {
           { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         )
         .then(res => {
-          let token = res.data.token
-          localStorage.setItem('token', 'Bearer ' + token)
-
-          // 页面跳转
-          this.$router.push('/org')
+          var code = res.data.code
+          if (code == 0) {
+            let token = res.data.token
+            console.log(token)
+            localStorage.setItem('token', 'Bearer ' + token)
+            // 页面跳转
+            this.$router.push('/org')
+          }
         })
         .catch(err => {
           console.log(err)

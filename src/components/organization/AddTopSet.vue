@@ -7,6 +7,8 @@
       :visible.sync="orgTreeSetDrawer"
       :direction="depdirection"
       :with-header="false"
+      :modal="false"
+      :wrapperClosable="false"
     >
       <div class="addDep-container">
         <div class="addDep-header">编辑部门</div>
@@ -14,7 +16,7 @@
           <div class="wing-drawer-title">部门信息</div>
           <el-form label-width="100px" :model="form" :rules="rules">
             <el-form-item label="部门名称:" prop="depname">
-              <el-input v-model="form.depname" disabled></el-input>
+              <el-input disabled v-model=" orgDepName"></el-input>
             </el-form-item>
             <el-form-item label="设置主管:">
               <!-- <el-input v-model="form.topdep"></el-input> -->
@@ -32,11 +34,6 @@
         </div>
         <div class="addDep-footer">
           <el-button type="primary" @click="$refs.drawer.closeDrawer()">确 定</el-button>
-          <!-- <el-button
-            type="primary"
-            @click="$refs.drawer.closeDrawer()"
-            :loading="loading"
-          >{{ loading ? '提交中 ...' : '确 定' }}</el-button>-->
           <el-button type="danger" @click="deleDep" plain>删除</el-button>
           <el-button @click="cancelForm">取 消</el-button>
         </div>
@@ -53,15 +50,21 @@ export default {
     return {
       form: {
         name: '',
-        topdep: ''
+        topdep: this.$store.state.orgDep.depName
       },
       leadDialogVisible: false,
       depdirection: 'rtl',
       loading: false,
       timer: null,
       rules: {
-        depname: [{ required: true }]
+        // depname: [{ required: true }]
       }
+    }
+  },
+  inject: ['reload'],
+  computed: {
+    orgDepName() {
+      return this.$store.state.orgDep.depName
     }
   },
   props: {
@@ -69,31 +72,72 @@ export default {
       type: Boolean
     }
   },
+  mounted() {},
+  watch: {
+    orgTreeSetDrawer() {
+      this.getDepInfo()
+    }
+  },
   components: {
     LeadDialog
   },
 
   methods: {
+    //获取部门信息
+    getDepInfo() {
+      var depId = this.$store.state.orgDep.depId
+      this.axios
+        .post('/company/dept/oneInfo', { deptId: depId })
+        .then(res => {
+          console.log(res)
+          var code = res.data.code
+          if (code == 0) {
+            var results = res.data.results
+            this.form.depName = results.name
+            this.form.depId = results.id
+            this.form.parDepName = results.parentName
+            this.form.parentId = results.parentId
+            this.form.deptManager = results.deptManager
+            this.form.deptParentManager = results.deptParentManager
+          } else {
+            // var msg = res.data.msg
+            //that.$message.error(msg)
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     //添加部门表单提交
     handleClose(done) {
-      // var that = this
-      // if (this.loading) {
-      //   return
-      // }
-      // this.$confirm('确定要提交表单吗？')
-      //   .then(_ => {
-      //     this.loading = true
-      //     this.timer = setTimeout(() => {
-      //       done()
-      //       // 动画关闭需要一定的时间
-      //       setTimeout(() => {
-      //         that.loading = false
-      //         that.$emit('changeupdateOrgTreeSetDrawer', false)
-      //         document.getElementById('wing-staff-input').innerHTML = ''
-      //       }, 400)
-      //     }, 2000)
-      //   })
-      //   .catch(_ => {})
+      console.log(this.$store.state.orgDep.depManager)
+      var that = this
+      var data = {
+        deptManager: this.$store.state.orgDep.depManager,
+        id: this.$store.state.orgDep.depId,
+        name: this.$store.state.orgDep.depName,
+        parentId: this.$store.state.orgDep.parentId
+      }
+      console.log(data)
+      this.axios
+        .post('/company/dept/update', data)
+        .then(res => {
+          console.log(res)
+          var code = res.data.code
+          if (code == 0) {
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
+          } else {
+            var msg = res.data.msg
+            that.$message.error(msg)
+            this.reload()
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
       this.$emit('changeupdateOrgTreeSetDrawer', false)
       document.getElementById('wing-staff-input').innerHTML = ''
     },
@@ -114,11 +158,38 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          var data = []
+          let orgDep = this.$store.state.orgDep
+          data.push({
+            id: orgDep.depId,
+            depName: orgDep.depName,
+            depManager: orgDep.depManager,
+            depParentManager: orgDep.depParentManager,
+            userCount: orgDep.userCount,
+            parentId: orgDep.parentId
           })
-          this.$emit('changeupdateOrgTreeSetDrawer', false)
+          this.axios
+            .post('/company/dept/delete', data)
+            .then(res => {
+              console.log(res)
+              var code = res.data.code
+              if (code == 0) {
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                })
+                this.$emit('changeupdateOrgTreeSetDrawer', false)
+                this.reload()
+              } else {
+                this.$message({
+                  type: 'success',
+                  message: res.data.msg
+                })
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
         })
         .catch(() => {
           this.$message({
@@ -126,24 +197,6 @@ export default {
             message: '已取消删除'
           })
         })
-
-      // let parentId = this.$store.state.orgTreeParentId
-      //   ? this.$store.state.orgTreeParentId
-      //   : 0
-      // alert(parentId)
-      // this.axios
-      //   .post('/dept/delete', { id: parentId })
-      //   .then(res => {
-      //     console.log(res)
-      //     var resData = res.data
-      //     if (resData.success == true) {
-      //       console.log(resData.result)
-      //       //this.orgdatas = resData.result
-      //     }
-      //   })
-      //   .catch(err => {
-      //     console.log(err)
-      //   })
     }
   }
 }

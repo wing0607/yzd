@@ -38,7 +38,7 @@ export default {
 </script>
 <style>
 .batch {
-  width: 1000px;
+  width: 1080px;
   margin: 0 auto;
   background: #fff;
 }
@@ -115,6 +115,6 @@ export default {
   border-bottom-right-radius: 14px;
 }
 .batch-main .el-tabs__content {
-  width: 1000px;
+  width: 1080px;
 }
 </style>

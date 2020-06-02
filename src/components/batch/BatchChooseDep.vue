@@ -1,8 +1,8 @@
 <template>
   <el-dialog
-    title="选择部门"
+    title="选择人员"
     :before-close="updateChooseDepDialog"
-    :visible.sync="chooseDepDialogVisible"
+    :visible.sync="batchChooseDepVisible"
     width="650px"
     center
     class="wing-dialog"
@@ -31,26 +31,13 @@
 </template>
 <script>
 export default {
-  name: 'ChooseDepDialog',
-  props: ['chooseDepDialogVisible'],
+  name: 'BatchChooseDep',
+  props: ['batchChooseDepVisible'],
   data() {
-    // const generateData = _ => {
-    //   const data = []
-    //   for (let i = 1; i <= 15; i++) {
-    //     data.push({
-    //       key: i,
-    //       label: `备选项 ${i}`
-    //     })
-    //   }
-    //   return data
-    // }
     return {
       data: [],
       value: [],
       staffArrs: []
-      // renderFunc(h, option) {
-      //   return <span>{option.key}</span>
-      // }
     }
   },
   mounted() {
@@ -85,30 +72,8 @@ export default {
           console.log(err)
         })
     },
-    leftCheckChoose(e) {
-      console.log(e)
-      let len = this.data.length
-      if (e.length == 0) {
-        for (var i = 0; i < len; i++) {
-          this.data[i].disabled = false
-        }
-      } else {
-        for (var i = 0; i < len; i++) {
-          if (this.data[i].key == e[0]) {
-            this.data[i].disabled = false
-          } else {
-            this.data[i].disabled = true
-          }
-        }
-      }
-    },
-    rightCheckChoose(e) {
-      // console.log(e)
-      // let len = this.data.length
-      // for (var i = 0; i < len; i++) {
-      //   this.data[i].disabled = false
-      // }
-    },
+    leftCheckChoose(e) {},
+    rightCheckChoose(e) {},
 
     renderFunc(h, option) {
       console.log(option)
@@ -135,48 +100,64 @@ export default {
       ])
     },
     updateChooseDepDialog() {
-      this.$emit('changeChooseDepDialog', false)
+      this.$emit('updateBatchChooseDep', false)
     },
     handleChange(value, direction, movedKeys) {
-      console.log(value)
       if (direction == 'right') {
-        // this.staffArrs = value
-        var len = this.data.length
-        this.staffArrs = []
-        for (var i = 0; i < len; i++) {
-          console.log(this.data[i].key)
-          if (this.data[i].key == value[0]) {
-            this.staffArrs.push({
-              key: this.data[i].key,
-              label: this.data[i].label
-            })
-            console.log(this.staffArrs[0].label)
-            var orgDep = {
-              depId: this.staffArrs[0].key,
-              depName: this.staffArrs[0].label,
-              depManager: this.$store.state.orgDep.depManager,
-              depParentManager: this.$store.state.orgDep.depParentManager,
-              userCount: this.$store.state.orgDep.userCount,
-              parentId: this.$store.state.orgDep.parentId
-            }
-            this.$store.dispatch('orgDep', orgDep)
-          }
-        }
-      } else if (direction == 'left') {
-        let len = this.data.length
-        for (var i = 0; i < len; i++) {
-          this.data[i].disabled = false
-        }
+        this.value = value
+        console.log(value)
+        // // this.staffArrs = value
+        // var len = this.data.length
+        // this.staffArrs = []
+        // for (var i = 0; i < len; i++) {
+        //   console.log(value)
+        //   if (this.data[i].key == value[0]) {
+        //     this.staffArrs.push({
+        //       key: this.data[i].key,
+        //       label: this.data[i].label
+        //     })
+        //     console.log(this.staffArrs[0].label)
+        //   }
+        // }
       }
     },
     saveChooseDepDialog() {
-      this.$emit('changeChooseDepDialog', false)
-      var len = this.staffArrs.length
-      var str = ''
-      for (let i = 0; i < len; i++) {
-        str += `<span>${this.staffArrs[i].label}</span>`
-      }
-      document.getElementById('wing-staff-input-add').innerHTML = str
+      let ids = this.value
+      this.axios
+        .post(
+          '/company/dept/downloadByDept',
+          {
+            ids: ids
+          },
+          { responseType: 'blob' }
+        )
+        .then(res => {
+          console.log(res)
+          if (res.data.type === 'application/json') {
+            this.$message({
+              type: 'error',
+              message: '导出失败，文件不存在或权限不足'
+            })
+          } else {
+            let blob = new Blob([res.data])
+            if (window.navigator.msSaveOrOpenBlob) {
+              navigator.msSaveBlob(blob, file.fileName)
+            } else {
+              let link = document.createElement('a')
+              let evt = document.createEvent('HTMLEvents')
+              evt.initEvent('click', false, false)
+              link.href = URL.createObjectURL(blob)
+              link.download = 'data.xls'
+              link.style.display = 'none'
+              document.body.appendChild(link)
+              link.click()
+              window.URL.revokeObjectURL(link.href)
+            }
+          }
+        })
+
+      this.$emit('updateBatchChooseDep', false)
+      console.log(this.staffArrs)
     }
   }
 }

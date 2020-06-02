@@ -1,5 +1,5 @@
 <template>
-  <el-aside width="260px" id="info-box" :style="{height:orgHeight-100+ 'px'}">
+  <el-aside id="info-box">
     <el-tree
       class="filter-tree"
       :data="orgdatas"
@@ -8,9 +8,8 @@
       node-key="id"
       default-expand-all
       highlight-current
-      draggable
-      @node-drop="handleDrop"
-      @node-click="nodeClick"
+      @node-click="orgNodeClick"
+      :expand-on-click-node="false"
       ref="tree"
     ></el-tree>
   </el-aside>
@@ -18,6 +17,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+
 export default {
   name: 'OrgLeft',
   components: {},
@@ -31,20 +31,42 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    parentId() {
+      return this.$store.state.orgDep.depId
+    }
+  },
   created() {
     this.getOrgTree()
   },
   mounted() {},
+  watch: {
+    parentId(newId, oldId) {
+      this.$refs.tree.setCurrentKey(newId)
+    }
+  },
   methods: {
+    //获取组织结构树
     getOrgTree() {
-      var token = localStorage.token
       this.axios
         .post('/company/dept/listTree', { parentId: -1 })
         .then(res => {
           var resData = res.data
           if (res.status == 200) {
-            this.orgdatas = resData.results
+            var results = resData.results
+            this.orgdatas = results
+            var orgDep = {
+              depId: results[0].id,
+              depName: results[0].name,
+              depManager: results[0].deptManager,
+              depParentManager: results[0].deptParentManager,
+              userCount: results[0].userCount,
+              parentId: results[0].parentId
+            }
+            this.$store.dispatch('orgDep', orgDep)
+            this.$nextTick(() => {
+              this.$refs.tree.setCurrentKey(1)
+            })
           }
         })
         .catch(err => {
@@ -55,11 +77,27 @@ export default {
       if (!value) return true
       return orgdatas.name.indexOf(value) !== -1
     },
+    //tree 拖拽排序
+    // handleDrop(draggingNode, dropNode, dropType, ev) {
+    //   console.log(this.orgdatas)
+    //   this.axios
+    //     .post('/company/dept/reOrder', this.orgdatas)
+    //     .then(res => {
+    //       console.log(res)
+    //       // var resData = res.data
+    //       // if (res.status == 200) {
+    //       //   this.orgdatas = resData.results
+    //       //   this.$nextTick(() => {
+    //       //     this.$refs.tree.setCurrentKey(1)
+    //       //   })
+    //       // }
+    //     })
+    //     .catch(err => {
+    //       console.log(err)
+    //     })
+    // },
 
-    handleDrop(draggingNode, dropNode, dropType, ev) {
-      console.log(this.orgdatas)
-    },
-    ...mapActions(['nodeClick'])
+    ...mapActions(['orgNodeClick'])
   }
 }
 </script>
