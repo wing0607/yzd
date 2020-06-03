@@ -90,7 +90,10 @@ export default {
               })
             }
           } else {
-            that.$message.error(results)
+            this.$message({
+              type: 'danger',
+              message: res.data.msg
+            })
           }
         })
         .catch(err => {

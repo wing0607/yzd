@@ -46,6 +46,7 @@ export default {
       this.orgDepTable(1)
     }
   },
+  inject: ['reload'],
   methods: {
     //获取部门
     orgDepTable(deptId) {
@@ -92,23 +93,7 @@ export default {
           console.log(err)
         })
     },
-    leftCheckChoose(e) {
-      console.log(e)
-      let len = this.data.length
-      if (e.length == 0) {
-        for (var i = 0; i < len; i++) {
-          this.data[i].disabled = false
-        }
-      } else {
-        for (var i = 0; i < len; i++) {
-          if (this.data[i].key == e[0]) {
-            this.data[i].disabled = false
-          } else {
-            this.data[i].disabled = true
-          }
-        }
-      }
-    },
+    leftCheckChoose(e) {},
     rightCheckChoose(e) {
       // console.log(e)
       // let len = this.data.length
@@ -118,8 +103,6 @@ export default {
     },
 
     renderFunc(h, option) {
-      debugger
-      console.log(h)
       var that = this
       if (option.type == 'dept') {
         return h('div', { attrs: { class: 'clearfix' } }, [
@@ -178,16 +161,16 @@ export default {
               key: this.data[i].key,
               label: this.data[i].label
             })
-            console.log(this.staffArrs[0].label)
-            var orgDep = {
-              depId: this.staffArrs[0].key,
-              depName: this.staffArrs[0].label,
-              depManager: this.$store.state.orgDep.depManager,
-              depParentManager: this.$store.state.orgDep.depParentManager,
-              userCount: this.$store.state.orgDep.userCount,
-              parentId: this.$store.state.orgDep.parentId
-            }
-            this.$store.dispatch('orgDep', orgDep)
+            // console.log(this.staffArrs[0].label)
+            // var orgDep = {
+            //   depId: this.staffArrs[0].key,
+            //   depName: this.staffArrs[0].label,
+            //   depManager: this.$store.state.orgDep.depManager,
+            //   depParentManager: this.$store.state.orgDep.depParentManager,
+            //   userCount: this.$store.state.orgDep.userCount,
+            //   parentId: this.$store.state.orgDep.parentId
+            // }
+            // this.$store.dispatch('orgDep', orgDep)
           }
         }
       } else if (direction == 'left') {
@@ -200,11 +183,34 @@ export default {
     saveChooseDepRole() {
       this.$emit('updateChooseDepRole', false)
       var len = this.staffArrs.length
-      var str = ''
-      for (let i = 0; i < len; i++) {
-        str += `<span>${this.staffArrs[i].label}</span>`
+      var userIds = []
+      for (var i = 0; i < this.staffArrs.length; i++) {
+        userIds.push(this.staffArrs[i].key)
       }
-      document.getElementById('wing-staff-input-add').innerHTML = str
+      var data = {
+        roleId: this.$store.state.orgRole.roleId,
+        userIds: userIds
+      }
+      this.axios
+        .post('/company/role/user/addUser', data)
+        .then(res => {
+          var resData = res.data
+          if (resData.code == 0) {
+            this.$message({
+              type: 'success',
+              message: '新增人员成功!'
+            })
+            this.reload()
+          } else {
+            this.$message({
+              type: 'danger',
+              message: resData.msg
+            })
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 }
