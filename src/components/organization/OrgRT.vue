@@ -17,7 +17,7 @@
         @click="orgTreeEditDrawer = true"
       >编辑</el-button>
     </div>
-    <div class="wing-org-title">
+    <div class="wing-org-title clearfix">
       <i class="iconfont wing-org-fonts">&#xe645;</i>
       <span>下级部门</span>
     </div>
@@ -36,7 +36,7 @@
       <el-table-column label="姓名" prop="name"></el-table-column>
       <el-table-column label="地址" prop="address"></el-table-column>
     </el-table>
-    <div class="wing-org-title">
+    <div class="wing-org-title clearfix">
       <i class="iconfont wing-org-fonts">&#xe63d;</i>
       <span>部门人员</span>
     </div>
@@ -387,7 +387,11 @@ export default {
   padding: 19px 0px;
   font-size: 20px;
 }
-.wing-org-fonts{
-  fo
+.wing-org-fonts {
+  font-size: 30px;
+  float: left;
+}
+.wing-org-title span {
+  float: left;
 }
 </style>

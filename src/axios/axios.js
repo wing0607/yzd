@@ -35,7 +35,7 @@ axios.interceptors.response.use(response => {
 
   if (response.data.code == 1006) {
 
-    Message.error('token值无效，请重新登录')
+    //Message.error('token值无效，请重新登录')
     localStorage.removeItem('token')
     router.push('/')
     endLoading()
