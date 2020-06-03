@@ -18,6 +18,7 @@
       >编辑</el-button>
     </div>
     <div class="wing-org-title">
+      <i class="iconfont wing-org-fonts">&#xe645;</i>
       <span>下级部门</span>
     </div>
     <div class="wing-gray-title clearfix">
@@ -36,6 +37,7 @@
       <el-table-column label="地址" prop="address"></el-table-column>
     </el-table>
     <div class="wing-org-title">
+      <i class="iconfont wing-org-fonts">&#xe63d;</i>
       <span>部门人员</span>
     </div>
     <div class="wing-gray-title clearfix">
@@ -384,5 +386,8 @@ export default {
   width: 100%;
   padding: 19px 0px;
   font-size: 20px;
+}
+.wing-org-fonts{
+  fo
 }
 </style>
